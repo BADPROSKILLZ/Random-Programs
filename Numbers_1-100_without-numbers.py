@@ -1,0 +1,1 @@
+for i in range(len("                                                                                                     ")):print(i) if(i!=int()) else print(end="")
