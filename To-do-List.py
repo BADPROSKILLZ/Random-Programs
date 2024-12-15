@@ -12,23 +12,28 @@ class ToDoList:
         self.label = tk.Label(self.window, text="To Do", font=('Arial', 50))
         self.label.pack()
 
-        for i in tasks:
-            checkboxStatuses.append(tk.IntVar)
-            tk.Checkbutton(self.window, text=i, font=('Arial', 24)).pack(fill=tk.X)
-
         self.textbox = tk.Text(self.window, height=3, font=('Arial', 24))
         self.textbox.pack()
 
-        self.button = tk.Button(self.window, text="Add New Task", font=('Arial', 18), command=self.add_task)
+        self.button = tk.Button(self.window, text="Add New Task", font=('Arial', 18), command=self.addTask)
         self.button.pack()
-        self.window.mainloop()
 
-    def add_task(self):
-        for status in checkboxStatuses:
-            if status == 0:
-                self.textbox.get('1.0', tk.END)
+        while True:
+            self.printTasks()
+            self.window.mainloop()
 
+    def addTask(self):
+        print(self.textbox.get('1.0', tk.END))
+        if self.textbox.get('1.0', tk.END) not in tasks:
+            tasks.append(self.textbox.get('1.0', tk.END))
+            self.printTasks([self.textbox.get('1.0', tk.END)])
 
+    def printTasks(self, taskList = tasks):
+        for i in taskList:
+            self.status = tk.IntVar()
+            checkboxStatuses.append(self.status)
+            tk.Checkbutton(self.window, text=i, font=('Arial', 24), variable=self.status).pack(side='left')
+            
 
 
 ToDoList()
