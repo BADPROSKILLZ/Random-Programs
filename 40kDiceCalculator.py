@@ -16,7 +16,9 @@ def matches_pattern_in_list(strings, pattern):
 
 def getKeywords(offOrDef, list):
     if offOrDef == "o":
-        print("Indirect Fire = if, Melta X = m #, Twin-Linked = tl, Anti-x = anti #, Blast = b, Sustained Hits X = sus #, Devestating Wounds = dev, Rapid Fire X = rf #, Lethal Hits = lh, Lance = la, Heavy = he, Torrent = t, Hazardous = ha, Ignores Cover = ic, Hit Reroll 1s = hr1, Hit Reroll All = hra, \nWound Reroll 1s = wr1, Wound Reroll All = wra, Damage Reroll 1s = dr1, Damage Reroll All = dra, Critical Hit on X = crith #, Critical Wound on X = critw #")
+        print("""Indirect Fire = if, Melta X = m #, Twin-Linked = tl, Anti-x = anti #, Blast = b, Sustained Hits X = sus #, Devestating Wounds = dev, Rapid Fire X = rf #, 
+              Lethal Hits = lh, Lance = la, Heavy = he, Torrent = t, Hazardous = ha, Ignores Cover = ic, Hit Reroll 1s = hr1, Hit Reroll All = hra, \nWound Reroll 1s = wr1, 
+              Wound Reroll All = wra, Damage Reroll 1s = dr1, Damage Reroll All = dra, Critical Hit on X = crith #, Critical Wound on X = critw #""")
     elif offOrDef == "d":
         print("Feel No Pain X = fnp #, +X to Saving Throw = save #, Cover = c, Stealth = st, +1 to req. Hit = h, +1 to req. Wound = w, Half Damage = hd")
 
@@ -141,6 +143,19 @@ def calculateHitReq(): #Keywords + Modifiers (DONE?)
     
     return requiredHit, requiredCrit, appliedKeywords
                 
+def successfulHit():
+    for i in allKeywords:
+        if re.fullmatch(r"sus (\d+|[1-9]\d*d[1-9]\d*)", i):
+            try:
+                i.index("d")
+                for j in range(i[i.index("d")-1]):
+                    sumHits += random.randint(1, i[i.index("d")+1])
+            except:
+                sumHits += i[5:]
+        
+        if i == "lh":
+            lethals += 1
+            
 def calculateWoundReq():
     pass
 
@@ -215,18 +230,12 @@ else:
         if dieRoll >= reqHit:
             sumHits += 1
             if dieRoll >= reqCrit:
-                for i in allKeywords:
-                    if re.fullmatch(r"sus (\d+|[1-9]\d*d[1-9]\d*)", i):
-                        try:
-                            i.index("d")
-                            for j in range(i[i.index("d")-1]):
-                                sumHits += random.randint(1, i[i.index("d")+1])
-                        except:
-                            sumHits += i[5:]
-                    
-                    if i == "lh":
-                        lethals += 1
+                successfulHit()
         else:
             if dieRoll == 1 and "hr1" in allKeywords:
-                
+                dieRoll = random.randint(1, 6)
+                hitList.append(dieRoll)
+                if dieRoll >= reqCrit:
+                    successfulHit()
+                    
 
